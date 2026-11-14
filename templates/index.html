@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="light dark" />
+  <title>AllerGuard AI · Understand Your Allergies</title>
+  <style>
+    :root {
+      --bg: #f7faff; --bg-alt: #eef5ff; --surface: #ffffff; --surface-2: #f4f8fd;
+      --heading: #102b50; --ink: #20344e; --text: #20344e; --muted: #64748b; --faint: #8492a3;
+      --line: #e3eaf3; --line-2: #d5dfeb;
+      --blue: #3478f6; --blue-dark: #2463d7; --sky: #eaf3ff; --green: #2e9b72;
+      --shadow: 0 18px 50px rgba(31,65,110,.09); --hero-a: #f7faff; --hero-b: #edf5ff;
+      --bubble: rgba(115,173,255,.12); --footer: #102b50;
+      --em: #059669; --em-2: #047857; --em-soft: rgba(16,185,129,.12); --on-em: #ffffff;
+      --amber: #b45309; --amber-soft: #fff4e0; --red: #c62828; --red-soft: #fdecec;
+      --radius: 22px;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --bg: #0a1628; --bg-alt: #0d1d35; --surface: #112340; --surface-2: #16294a;
+        --heading: #eef3fa; --ink: #d5deea; --text: #e6edf7; --muted: #8fa3bf; --faint: #6b7f9c;
+        --line: rgba(255,255,255,.08); --line-2: rgba(255,255,255,.14);
+        --blue: #5b9bff; --blue-dark: #3478f6; --sky: rgba(91,155,255,.14); --green: #34d399;
+        --shadow: 0 18px 50px rgba(0,0,0,.25); --hero-a: #0a1628; --hero-b: #0f2442;
+        --bubble: rgba(91,155,255,.08); --footer: #071120;
+        --em: #10b981; --em-2: #34d399; --em-soft: rgba(16,185,129,.12); --on-em: #04231a;
+        --amber: #fbbf24; --amber-soft: rgba(245,158,11,.12); --red: #f87171; --red-soft: rgba(239,68,68,.12);
+      }
+    }
+    :root[data-theme="dark"] {
+      --bg: #0a1628; --bg-alt: #0d1d35; --surface: #112340; --surface-2: #16294a;
+      --heading: #eef3fa; --ink: #d5deea; --text: #e6edf7; --muted: #8fa3bf; --faint: #6b7f9c;
+      --line: rgba(255,255,255,.08); --line-2: rgba(255,255,255,.14);
+      --blue: #5b9bff; --blue-dark: #3478f6; --sky: rgba(91,155,255,.14); --green: #34d399;
+      --shadow: 0 18px 50px rgba(0,0,0,.25); --hero-a: #0a1628; --hero-b: #0f2442;
+      --bubble: rgba(91,155,255,.08); --footer: #071120;
+      --em: #10b981; --em-2: #34d399; --em-soft: rgba(16,185,129,.12); --on-em: #04231a;
+      --amber: #fbbf24; --amber-soft: rgba(245,158,11,.12); --red: #f87171; --red-soft: rgba(239,68,68,.12);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; color: var(--ink); background: var(--bg); line-height: 1.6;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    button, input { font: inherit; color: inherit; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    a { color: inherit; text-decoration: none; }
+    .container { width: min(1120px, calc(100% - 40px)); margin: 0 auto; }
+
+    header { position: sticky; z-index: 20; top: 0; border-bottom: 1px solid var(--line);
+      background: color-mix(in srgb, var(--surface) 88%, transparent); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+    .nav { min-height: 72px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+    .brand { display: flex; align-items: center; gap: 11px; color: var(--heading); font-weight: 800; letter-spacing: -.5px; font-size: 19px; }
+    .brand-mark { width: 40px; height: 44px; display: grid; place-items: center; border-radius: 14px; background: var(--sky); color: var(--blue); }
+    .brand-mark svg { width: 26px; height: 29px; }
+    .nav-links { display: flex; align-items: center; gap: 28px; color: var(--muted); font-size: 14px; font-weight: 600; }
+    .nav-links a:hover { color: var(--blue); }
+    .nav-cta { padding: 11px 17px; color: #fff !important; background: var(--blue); border-radius: 12px; }
+    .nav-cta:hover, .button-primary:hover { background: var(--blue-dark); transform: translateY(-1px); }
+    .theme-btn { border: 1px solid var(--line-2); background: transparent; color: var(--muted); border-radius: 10px;
+      padding: 8px 11px; font-size: 13px; font-weight: 600; cursor: pointer; }
+
+    .hero { position: relative; overflow: hidden; padding: 84px 0 76px; background: linear-gradient(115deg, var(--hero-a) 15%, var(--hero-b) 100%); }
+    .hero::before, .hero::after { content: ""; position: absolute; border-radius: 50%; pointer-events: none; background: var(--bubble); }
+    .hero::before { width: 420px; height: 420px; right: -120px; top: -160px; }
+    .hero::after { width: 260px; height: 260px; right: 25%; bottom: -180px; }
+    .hero-grid { position: relative; z-index: 1; display: grid; grid-template-columns: 1.15fr .85fr; gap: 55px; align-items: center; }
+    .eyebrow { display: inline-flex; gap: 8px; align-items: center; color: var(--blue); font-size: 12px; font-weight: 800;
+      letter-spacing: 1.2px; text-transform: uppercase; background: var(--sky); padding: 8px 12px; border-radius: 999px; }
+    .eyebrow-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); }
+    h1 { margin: 19px 0 18px; max-width: 700px; color: var(--heading); font-size: clamp(38px, 5vw, 60px); line-height: 1.09; letter-spacing: -2.5px; }
+    .hero-copy { max-width: 590px; margin: 0 0 28px; color: var(--muted); font-size: 17px; }
+    .button { display: inline-flex; align-items: center; justify-content: center; gap: 10px; border: 0; border-radius: 13px;
+      padding: 15px 22px; cursor: pointer; font-weight: 750; transition: .2s ease; }
+    .button-primary { background: var(--blue); color: #fff; box-shadow: 0 9px 22px rgba(52,120,246,.22); }
+    .button-secondary { background: var(--sky); color: var(--blue); }
+    .trust-line { display: flex; align-items: center; gap: 9px; margin-top: 21px; color: var(--faint); font-size: 12px; }
+    .trust-line svg { width: 17px; color: var(--green); }
+
+    .visual { position: relative; min-height: 350px; display: grid; place-items: center; }
+    .visual-halo { position: absolute; width: 300px; height: 300px; border-radius: 50%; background: linear-gradient(140deg, var(--sky), transparent); }
+    .visual-card { position: relative; width: min(320px, 92%); padding: 26px; background: var(--surface); border: 1px solid var(--line);
+      border-radius: 24px; box-shadow: var(--shadow); animation: float 5s ease-in-out infinite; }
+    @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-9px); } }
+    .visual-card-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 23px; }
+    .visual-card-head strong { color: var(--heading); font-size: 14px; }
+    .live { padding: 5px 9px; border-radius: 999px; background: var(--em-soft); color: var(--em-2); font-size: 10px; font-weight: 800; }
+    .pattern-row { display: flex; align-items: center; gap: 12px; margin: 17px 0; }
+    .pattern-icon { width: 39px; height: 39px; display: grid; place-items: center; border-radius: 12px; background: var(--sky); font-size: 18px; }
+    .pattern-info { flex: 1; }
+    .pattern-info strong { display: block; color: var(--heading); font-size: 12px; }
+    .pattern-info span { color: var(--faint); font-size: 10px; }
+    .mini-bar { width: 49px; height: 6px; border-radius: 8px; background: var(--line); overflow: hidden; }
+    .mini-bar i { display: block; height: 100%; background: var(--blue); border-radius: inherit; }
+    .floating-shield { position: absolute; right: 4%; top: 14%; width: 65px; height: 70px; display: grid; place-items: center;
+      color: var(--blue); background: var(--surface); border-radius: 20px; box-shadow: var(--shadow); }
+    .floating-shield svg { width: 37px; }
+
+    section { scroll-margin-top: 86px; }
+    .section { padding: 78px 0; }
+    .section-heading { max-width: 640px; text-align: center; margin: 0 auto 38px; }
+    .section-heading h2 { margin: 12px 0 10px; color: var(--heading); font-size: clamp(28px, 3.2vw, 39px); letter-spacing: -1.2px; }
+    .section-heading p { margin: 0; color: var(--muted); }
+    .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+    .step-card { padding: 25px; background: var(--surface); border: 1px solid var(--line); border-radius: 18px; }
+    .step-number { width: 39px; height: 39px; display: grid; place-items: center; color: var(--blue); background: var(--sky); border-radius: 12px; font-weight: 800; }
+    .step-card h3 { margin: 16px 0 6px; color: var(--heading); font-size: 17px; }
+    .step-card p { margin: 0; color: var(--muted); font-size: 14px; }
+
+    .checker-section { background: var(--bg-alt); padding: 76px 0; }
+    .checker-intro { text-align: center; margin-bottom: 28px; }
+    .checker-intro h2 { color: var(--heading); font-size: clamp(29px, 4vw, 40px); letter-spacing: -1.2px; margin: 12px 0 8px; }
+    .checker-intro p { margin: 0; color: var(--muted); }
+
+    /* Question form (unchanged look) */
+    .quiz { max-width: 620px; margin: 0 auto; }
+    .progress { height: 6px; background: var(--surface-2); border-radius: 99px; overflow: hidden; margin-bottom: 22px; }
+    .progress i { display: block; height: 100%; background: var(--em); border-radius: 99px; transition: width .35s ease; }
+    .q-meta { font-size: 13px; color: var(--faint); margin-bottom: 6px; }
+    .q-title { font-size: 26px; letter-spacing: -.5px; margin: 0 0 6px; color: var(--text); }
+    .q-hint { color: var(--muted); font-size: 14px; margin: 0 0 20px; }
+    .options { display: grid; gap: 10px; }
+    .opt { text-align: left; background: var(--surface); border: 1px solid var(--line-2); border-radius: 14px; padding: 15px 18px;
+      font-size: 16px; font-weight: 500; display: flex; justify-content: space-between; align-items: center; color: var(--text);
+      cursor: pointer; transition: border-color .15s, background .15s, transform .1s; }
+    .opt:hover { border-color: var(--em); }
+    .opt:active { transform: scale(.99); }
+    .opt[aria-pressed="true"] { border-color: var(--em); background: var(--em-soft); }
+    .tick { width: 20px; height: 20px; border-radius: 6px; border: 1.5px solid var(--line-2); display: grid; place-items: center;
+      font-size: 12px; color: var(--on-em); font-weight: 800; }
+    .opt[aria-pressed="true"] .tick { background: var(--em); border-color: var(--em); }
+    .q-actions { display: flex; justify-content: space-between; margin-top: 22px; }
+    .btn { display: inline-flex; align-items: center; gap: 8px; border: 0; border-radius: 12px; padding: 12px 18px; font-weight: 600;
+      cursor: pointer; transition: transform .15s, background .15s, opacity .15s; }
+    .btn-em { background: var(--em); color: var(--on-em); }
+    .btn-em:hover { background: var(--em-2); transform: translateY(-1px); }
+    .btn-ghost { background: transparent; border: 1px solid var(--line-2); color: var(--text); }
+    .btn:disabled { opacity: .35; cursor: not-allowed; transform: none; }
+    .q-card { animation: rise .35s ease both; }
+    @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+    .privacy { text-align: center; font-size: 12px; color: var(--faint); margin-top: 18px; }
+
+    /* Results */
+    .results { display: none; max-width: 900px; margin: 34px auto 0; animation: rise .35s ease both; }
+    .results.show { display: block; }
+    .results-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 18px; margin-bottom: 18px; }
+    .results-top h2 { color: var(--heading); font-size: 27px; letter-spacing: -.7px; margin: 0 0 4px; }
+    .results-top p { margin: 0; color: var(--em-2); font-size: 13px; font-weight: 600; }
+    .result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+    .result-card { padding: 21px; background: var(--surface); border: 1px solid var(--line); border-radius: 17px; }
+    .result-card h3 { margin: 0 0 13px; color: var(--heading); font-size: 15px; display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+    .result-card p { margin: 0; color: var(--muted); font-size: 13px; }
+    .result-card p b { color: var(--text); }
+    .ai-card { margin-bottom: 15px; border-color: color-mix(in srgb, var(--blue) 35%, transparent); }
+    .summary { font-size: 16px !important; color: var(--text) !important; }
+    .src { font-size: 11px; font-weight: 700; color: var(--em-2); }
+    .trigger-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; padding: 10px 0; border-top: 1px solid var(--line); }
+    .trigger-row:first-of-type { border-top: 0; padding-top: 0; }
+    .trigger-row strong { color: var(--text); font-size: 14px; }
+    .chip { font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 999px; white-space: nowrap; display: inline-block; }
+    .chip.high { background: var(--red-soft); color: var(--red); }
+    .chip.mid { background: var(--amber-soft); color: var(--amber); }
+    .chip.low { background: var(--em-soft); color: var(--em-2); }
+    .big { font-size: 32px; font-weight: 700; letter-spacing: -1px; line-height: 1.1; margin-bottom: 8px; color: var(--text); }
+    .big small { font-size: 13px; font-weight: 500; color: var(--muted); letter-spacing: 0; }
+    .suggestions { margin: 0; padding-left: 18px; color: var(--muted); font-size: 13px; }
+    .suggestions li { margin: 7px 0; }
+    .disclaimer { margin-top: 16px; padding: 14px 16px; color: var(--text); background: var(--amber-soft); border-radius: 13px; font-size: 12px; }
+    .empty-state { color: var(--faint); font-size: 13px; font-style: italic; }
+    .loading { padding: 40px; text-align: center; color: var(--muted); }
+    .spinner { width: 28px; height: 28px; margin: 0 auto 12px; border-radius: 50%; border: 3px solid var(--em-soft);
+      border-top-color: var(--em); animation: spin .8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* First aid */
+    .aid-alert { max-width: 900px; margin: 0 auto 18px; padding: 16px 18px; border-radius: 14px; background: var(--red-soft);
+      color: var(--text); font-size: 15px; border-left: 5px solid var(--red); }
+    .aid-grid { max-width: 900px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+    .aid-card { padding: 22px; background: var(--surface); border: 1px solid var(--line); border-radius: 17px; }
+    .aid-card.severe { border-top: 4px solid var(--red); }
+    .aid-card.mild { border-top: 4px solid var(--amber); }
+    .aid-card.asthma { grid-column: 1 / -1; border-top: 4px solid var(--blue); }
+    .aid-signs { color: var(--muted); font-size: 13px; margin: 12px 0; }
+    .aid-steps { margin: 0; padding-left: 20px; color: var(--text); font-size: 14px; }
+    .aid-steps li { margin: 8px 0; }
+    .aid-note { max-width: 900px; margin: 14px auto 0; text-align: center; color: var(--faint); font-size: 12px; }
+
+    footer { padding: 28px 0; background: var(--footer); color: #c3d0df; font-size: 12px; }
+    .footer-inner { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+    .footer-brand { color: #fff; font-weight: 750; }
+
+    @media (max-width: 760px) {
+      .nav { min-height: 64px; }
+      .nav-links { gap: 12px; }
+      .nav-links a:not(.nav-cta) { display: none; }
+      .hero { padding: 58px 0 45px; }
+      .hero-grid, .steps, .result-grid, .aid-grid { grid-template-columns: 1fr; }
+      .visual { min-height: 300px; }
+      .section { padding: 58px 0; }
+      .q-title { font-size: 22px; }
+      .results-top, .footer-inner { flex-direction: column; align-items: flex-start; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container nav">
+      <a class="brand" href="#home" aria-label="AllerGuard AI home">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 32 36" fill="none"><path d="M16 2.5 28 7v9.2c0 8.1-5.3 14.1-12 17.3C9.3 30.3 4 24.3 4 16.2V7l12-4.5Z" fill="currentColor"/><path d="m10.5 17 3.5 3.5 7.5-8" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        AllerGuard AI
+      </a>
+      <nav class="nav-links" aria-label="Main navigation">
+        <a href="#checker">Allergy Check</a>
+        <a href="#first-aid">First Aid</a>
+        <a href="#how-it-works">How It Works</a>
+        <button class="theme-btn" id="theme" type="button">◐ Auto</button>
+        <a class="nav-cta" href="#checker">Get started →</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="home">
+      <div class="container hero-grid">
+        <div>
+          <span class="eyebrow"><span class="eyebrow-dot"></span> AI allergy check · Dubai</span>
+          <h1>Understand Your Allergies. Take Control of Your Environment.</h1>
+          <p class="hero-copy">AllerGuard AI looks for possible allergy triggers in your answers, then checks tomorrow's dust forecast for JLT to help you plan your day.</p>
+          <a class="button button-primary" href="#checker">Start Allergy Check →</a>
+          <div class="trust-line">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m5 12 4 4L19 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Answers are never saved · Informational, not diagnostic
+          </div>
+        </div>
+        <div class="visual" aria-label="Example allergy pattern overview">
+          <div class="visual-halo"></div>
+          <div class="visual-card">
+            <div class="visual-card-head"><strong>Your pattern overview</strong><span class="live">EXAMPLE</span></div>
+            <div class="pattern-row"><span class="pattern-icon">💨</span><div class="pattern-info"><strong>Dust exposure</strong><span>Likely connection</span></div><span class="mini-bar"><i style="width:72%"></i></span></div>
+            <div class="pattern-row"><span class="pattern-icon">🏠</span><div class="pattern-info"><strong>Home environment</strong><span>Worth keeping track of</span></div><span class="mini-bar"><i style="width:48%"></i></span></div>
+            <div class="pattern-row"><span class="pattern-icon">🐾</span><div class="pattern-info"><strong>Animal exposure</strong><span>Explore your own pattern</span></div><span class="mini-bar"><i style="width:29%"></i></span></div>
+          </div>
+          <div class="floating-shield" aria-hidden="true">
+            <svg viewBox="0 0 32 36" fill="none"><path d="M16 2.5 28 7v9.2c0 8.1-5.3 14.1-12 17.3C9.3 30.3 4 24.3 4 16.2V7l12-4.5Z" fill="currentColor"/><path d="m10.5 17 3.5 3.5 7.5-8" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="how-it-works">
+      <div class="container">
+        <div class="section-heading">
+          <span class="eyebrow">How it works</span>
+          <h2>A little more clarity, step by step</h2>
+          <p>Notice what you're experiencing, explore possible connections, and find practical ideas to discuss with a professional.</p>
+        </div>
+        <div class="steps">
+          <article class="step-card"><span class="step-number">01</span><h3>Share your experience</h3><p>Answer 6 quick questions about symptoms, places and possible exposures.</p></article>
+          <article class="step-card"><span class="step-number">02</span><h3>AI finds possible triggers</h3><p>An AI model suggests possible triggers, with a reason for each. Possibilities, not conclusions.</p></article>
+          <article class="step-card"><span class="step-number">03</span><h3>Plan around tomorrow's dust</h3><p>A model trained on 4 years of real JLT air data forecasts tomorrow's dust for you.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="checker-section" id="checker">
+      <div class="container">
+        <div class="checker-intro">
+          <span class="eyebrow">Your personal check-in</span>
+          <h2>Let's look for patterns</h2>
+          <p>One question at a time. It takes about a minute.</p>
+        </div>
+        <div class="quiz" id="quiz"></div>
+        <p class="privacy">Your answers are only used to calculate your result and are never saved.</p>
+        <div class="results" id="results" aria-live="polite"><div id="results-body"></div></div>
+      </div>
+    </section>
+
+    <section class="section" id="first-aid">
+      <div class="container">
+        <div class="section-heading">
+          <span class="eyebrow">First aid</span>
+          <h2>If someone has an allergic reaction</h2>
+          <p>What to do before they reach a clinic or hospital. Based on standard first-aid guidance; it doesn't replace a trained first-aider or emergency services.</p>
+        </div>
+        <div class="aid-alert"><strong>Emergency in the UAE: call 998 (ambulance) or 999.</strong> Say it may be anaphylaxis, a severe allergic reaction.</div>
+        <div class="aid-grid">
+          <article class="aid-card mild">
+            <span class="chip mid">Mild to moderate reaction</span>
+            <p class="aid-signs">Sneezing, runny nose, itchy or watery eyes, or an itchy rash or hives in one area.</p>
+            <ol class="aid-steps">
+              <li>Help them move away from the trigger, like dust, an animal or a food.</li>
+              <li>Rinse skin or eyes with clean, cool water if the allergen touched them.</li>
+              <li>Put a cool, damp cloth on itchy skin or mild swelling.</li>
+              <li>If a doctor has already advised an allergy medicine (antihistamine), they can take it as directed.</li>
+              <li>Stay with them and watch closely. If any severe sign appears, treat it as an emergency.</li>
+            </ol>
+          </article>
+          <article class="aid-card severe">
+            <span class="chip high">Severe reaction (anaphylaxis): emergency</span>
+            <p class="aid-signs">Trouble breathing or wheezing, swelling of the lips, tongue or throat, a hoarse voice, dizziness or fainting, or pale, clammy skin.</p>
+            <ol class="aid-steps">
+              <li><b>Call 998 straight away.</b></li>
+              <li>If they carry an adrenaline auto-injector (such as an EpiPen), help them use it in the outer thigh. It works through clothing.</li>
+              <li>Lie them down with their legs raised. If breathing is hard, let them sit up instead. Don't let them stand or walk.</li>
+              <li>If there's no improvement after 5 minutes and they have a second auto-injector, use it.</li>
+              <li>If they stop breathing normally, start CPR if you know how and follow the call handler's instructions.</li>
+              <li>They still need hospital care even if they feel better, because symptoms can come back.</li>
+            </ol>
+          </article>
+          <article class="aid-card asthma">
+            <span class="chip low">Asthma attack (for example, from dust)</span>
+            <ol class="aid-steps" style="margin-top:12px">
+              <li>Help them sit upright and stay calm. Loosen tight clothing.</li>
+              <li>Help them use their reliever inhaler (usually blue) as their asthma action plan says.</li>
+              <li>Call 998 if the inhaler doesn't help, they can't speak in full sentences, or their lips turn blue.</li>
+            </ol>
+          </article>
+        </div>
+        <p class="aid-note">This section is general information for a student prototype, not medical training. Learn first aid from a certified course.</p>
+      </div>
+    </section>
+
+    <section class="section" id="about">
+      <div class="container section-heading">
+        <span class="eyebrow">About AllerGuard AI</span>
+        <h2>Better questions can be a helpful first step</h2>
+        <p>AllerGuard AI is a student hackathon prototype. It combines AI analysis of your answers with a machine learning dust forecast trained on real JLT air data. It offers general educational insights, not medical advice, diagnosis or treatment.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container footer-inner">
+      <span class="footer-brand">AllerGuard AI</span>
+      <span>Dust data: Open-Meteo (CAMS model estimates). This project is a prototype and is not medical advice.</span>
+    </div>
+  </footer>
+
+  <script>
+    const API = ""; // leave empty when Flask serves this page; set to the backend URL if the page is hosted elsewhere
+    const QUESTIONS = [
+      { key: "age", type: "single", title: "What's your age group?", hint: "Children, teens and older adults are more sensitive to dusty air.",
+        options: ["Under 13", "13–17", "18–30", "31–50", "Over 50"] },
+      { key: "symptoms", type: "multi", title: "Which symptoms have you noticed lately?", hint: "Select all that apply.",
+        options: ["Sneezing", "Runny nose", "Itchy eyes", "Skin itching", "Coughing", "None of these"], exclusive: "None of these" },
+      { key: "severity", type: "single", title: "How strong are they usually?", hint: "Your best guess is fine.",
+        options: ["Mild", "Moderate", "Severe", "I don't have symptoms"] },
+      { key: "exposures", type: "multi", title: "What are you around often?", hint: "Select all that apply.",
+        options: ["Dust", "Pollen", "Cats", "Dogs", "Other animals", "Unsure"], exclusive: "Unsure" },
+      { key: "worse", type: "multi", title: "Do symptoms get worse after any of these?", hint: "Select all that apply.",
+        options: ["Dust", "Pollen", "Animals", "Outdoor environments", "I am not sure"], exclusive: "I am not sure" },
+      { key: "places", type: "multi", title: "Where do you notice them most?", hint: "Select all that apply.",
+        options: ["At home", "Outdoors", "At school or work", "Around animals"] },
+    ];
+    const LEVEL = { "Likely": "high", "Possible": "mid", "Less likely": "low" };
+    const RISK = { Lower: "low", Moderate: "mid", Higher: "high" };
+    const esc = (v) => String(v).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+    const answers = {};
+    let step = 0, locked = false;
+    const quiz = document.getElementById("quiz");
+
+    // ---------- Questions: one at a time ----------
+    function chosenFor(q) { return q.type === "multi" ? (answers[q.key] || []) : [answers[q.key]]; }
+
+    function renderStep() {
+      const q = QUESTIONS[step], chosen = chosenFor(q), last = step === QUESTIONS.length - 1;
+      quiz.innerHTML = `
+        <div class="progress"><i style="width:${step / QUESTIONS.length * 100}%"></i></div>
+        <div class="q-card">
+          <div class="q-meta">Question ${step + 1} of ${QUESTIONS.length}</div>
+          <h2 class="q-title">${esc(q.title)}</h2>
+          <p class="q-hint">${esc(q.hint)}</p>
+          <div class="options">${q.options.map((o) =>
+            `<button class="opt" type="button" data-value="${esc(o)}" aria-pressed="${chosen.includes(o)}"><span>${esc(o)}</span><span class="tick">${chosen.includes(o) ? "✓" : ""}</span></button>`).join("")}</div>
+          <div class="q-actions">
+            <button class="btn btn-ghost" type="button" id="back" ${step === 0 ? "disabled" : ""}>← Back</button>
+            ${q.type === "multi" ? `<button class="btn btn-em" type="button" id="next">${last ? "Analyse my answers" : "Next →"}</button>` : ""}
+          </div>
+        </div>`;
+      quiz.querySelectorAll(".opt").forEach((b) => b.addEventListener("click", () => choose(q, b.dataset.value)));
+      document.getElementById("back").addEventListener("click", () => { step--; renderStep(); });
+      const next = document.getElementById("next");
+      if (next) next.addEventListener("click", advance);
+    }
+
+    function refresh(q) {
+      const chosen = chosenFor(q);
+      quiz.querySelectorAll(".opt").forEach((b) => {
+        const on = chosen.includes(b.dataset.value);
+        b.setAttribute("aria-pressed", on);
+        b.querySelector(".tick").textContent = on ? "✓" : "";
+      });
+    }
+
+    function choose(q, value) {
+      if (q.type === "single") {
+        if (locked) return;
+        answers[q.key] = value;
+        refresh(q);
+        locked = true;
+        setTimeout(() => { locked = false; advance(); }, 220);
+        return;
+      }
+      let list = answers[q.key] || [];
+      if (list.includes(value)) list = list.filter((v) => v !== value);
+      else if (value === q.exclusive) list = [value];
+      else list = [...list.filter((v) => v !== q.exclusive), value];
+      answers[q.key] = list;
+      refresh(q);
+    }
+
+    function advance() {
+      if (step < QUESTIONS.length - 1) { step++; renderStep(); } else finish();
+    }
+
+    function restart() {
+      for (const k in answers) delete answers[k];
+      step = 0;
+      renderStep();
+      document.getElementById("results").classList.remove("show");
+      document.getElementById("checker").scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    // ---------- Results ----------
+    function showResults(html) {
+      const box = document.getElementById("results");
+      document.getElementById("results-body").innerHTML = html;
+      box.classList.add("show");
+      box.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    async function finish() {
+      quiz.innerHTML = `<div class="progress"><i style="width:100%"></i></div><div class="loading"><div class="spinner"></div>AllerGuard AI is analysing your answers…</div>`;
+      document.getElementById("results").classList.remove("show");
+      const payload = {
+        age: answers.age || "", symptoms: answers.symptoms || [], severity: answers.severity || "",
+        exposures: answers.exposures || [], worse: answers.worse || [], places: answers.places || [],
+      };
+      try {
+        const res = await fetch(`${API}/api/analyze`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+        const r = await res.json();
+        if (r.error) throw new Error(r.error);
+        quiz.innerHTML = `<div class="progress"><i style="width:100%"></i></div><p class="q-meta" style="text-align:center">✓ Analysis complete. Your results are below.</p>`;
+        showResults(renderResults(r));
+      } catch (e) {
+        quiz.innerHTML = `<div class="progress"><i style="width:100%"></i></div><p class="q-meta" style="text-align:center">Something went wrong. See below.</p>`;
+        showResults(`<div class="result-card"><h3>Couldn't analyse your answers</h3><p>${esc(e.message)}</p>
+          <button class="btn btn-em" type="button" onclick="finish()" style="margin-top:14px">Try again</button></div>`);
+      }
+    }
+
+    function renderResults(r) {
+      const list = (items) => (items || []).map((t) => `<li>${esc(t)}</li>`).join("");
+      const triggers = (r.triggers || []).map((t) => `
+        <div class="trigger-row"><div><strong>${esc(t.name)}</strong><p>${esc(t.why || "")}</p></div>
+        <span class="chip ${LEVEL[t.level] || "mid"}">${esc(t.level || "Possible")}</span></div>`).join("")
+        || `<p class="empty-state">No clear trigger stands out from your answers yet.</p>`;
+      const a = r.air;
+      const air = a ? `
+        <article class="result-card"><h3>Tomorrow's dust in JLT <span class="src">ML forecast</span></h3>
+          <div class="big">${a.pm_tomorrow} <small>µg/m³ PM2.5</small></div>
+          <span class="chip ${RISK[a.risk]}">${esc(a.risk)} risk for you</span>
+          <p style="margin-top:10px">Your limit is <b>${a.pm_limit}</b>${a.reasons.length ? " because " + esc(a.reasons.join(", ")) : ""}.
+          Lower-risk hours outside: <b>${esc(a.windows.join(", ") || "none tomorrow")}</b>.</p></article>` : "";
+      const remedies = list(r.remedies);
+      const src = r.source === "rules" ? "Rule-based backup (AI unavailable)" : `Analysed by ${esc(r.source)}`;
+      return `
+        <div class="results-top"><div><h2>Your allergy check</h2><p>${src}</p></div>
+          <button class="button button-secondary" type="button" onclick="restart()">Edit answers</button></div>
+        <article class="result-card ai-card"><h3>AllerGuard AI analysis</h3><p class="summary">${esc(r.summary || "")}</p></article>
+        <div class="result-grid">
+          <article class="result-card"><h3>Possible triggers</h3>${triggers}</article>
+          ${air}
+          <article class="result-card"><h3>What you can do</h3><ul class="suggestions">${list(r.tips)}</ul></article>
+          ${remedies ? `<article class="result-card"><h3>Home remedies to try</h3><ul class="suggestions">${remedies}</ul></article>` : ""}
+          <article class="result-card" style="grid-column: 1 / -1"><h3>🚑 If a reaction becomes serious</h3>
+            <p>Trouble breathing, swelling of the lips or throat, or fainting is an emergency. Call <b>998</b> and follow the first-aid steps.</p>
+            <a class="button button-secondary" href="#first-aid" style="margin-top:12px">View first aid</a></article>
+        </div>
+        <div class="disclaimer"><strong>Remember:</strong> these are possible triggers, not a diagnosis. Stop any remedy that causes irritation. If symptoms are frequent, getting worse or worrying you, talk to a doctor.</div>`;
+    }
+
+    // ---------- Theme: Auto / Light / Dark ----------
+    const THEMES = ["auto", "light", "dark"], THEME_LABEL = { auto: "◐ Auto", light: "☀️ Light", dark: "🌙 Dark" };
+    let theme = localStorage.getItem("theme") || "auto";
+    function applyTheme() {
+      const root = document.documentElement;
+      if (theme === "auto") { root.removeAttribute("data-theme"); root.style.colorScheme = ""; }
+      else { root.dataset.theme = theme; root.style.colorScheme = theme; }
+      document.getElementById("theme").textContent = THEME_LABEL[theme];
+    }
+    document.getElementById("theme").addEventListener("click", () => {
+      theme = THEMES[(THEMES.indexOf(theme) + 1) % THEMES.length];
+      localStorage.setItem("theme", theme);
+      applyTheme();
+    });
+
+    applyTheme();
+    renderStep();
+  </script>
+</body>
+</html>
