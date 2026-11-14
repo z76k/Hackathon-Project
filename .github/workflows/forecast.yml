@@ -1,0 +1,26 @@
+name: Daily dust forecast
+
+on:
+  schedule:
+    - cron: "0 2 * * *"   # 02:00 UTC = 6 AM in Dubai
+  workflow_dispatch:       # adds a "Run workflow" button
+
+permissions:
+  contents: write
+
+jobs:
+  forecast:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - run: pip install pandas scikit-learn requests python-dotenv google-genai
+      - run: python make_forecast.py
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add docs/forecast.json
+          git commit -m "Update dust forecast" || echo "No changes"
+          git push
