@@ -232,7 +232,7 @@
         <div>
           <span class="eyebrow"><span class="eyebrow-dot"></span> AI allergy check · Dubai</span>
           <h1>Understand Your Allergies. Take Control of Your Environment.</h1>
-          <p class="hero-copy">AllerGuard AI looks for possible allergy triggers in your answers, then checks tomorrow's dust forecast for JLT to help you plan your day.</p>
+          <p class="hero-copy">AllerGuard AI looks for possible allergy triggers in your answers, then checks tomorrow's air-quality forecast for JLT to help you plan your day.</p>
           <a class="button button-primary" href="#checker">Start Allergy Check →</a>
           <div class="trust-line">
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m5 12 4 4L19 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -262,9 +262,9 @@
           <p>Notice what you're experiencing, explore possible connections, and find practical ideas to discuss with a professional.</p>
         </div>
         <div class="steps">
-          <article class="step-card"><span class="step-number">01</span><h3>Share your experience</h3><p>Answer 6 quick questions about symptoms, places and possible exposures.</p></article>
+          <article class="step-card"><span class="step-number">01</span><h3>Share your experience</h3><p>Answer 5 quick questions about symptoms, places and possible exposures.</p></article>
           <article class="step-card"><span class="step-number">02</span><h3>AI finds possible triggers</h3><p>An AI model suggests possible triggers, with a reason for each. Possibilities, not conclusions.</p></article>
-          <article class="step-card"><span class="step-number">03</span><h3>Plan around tomorrow's dust</h3><p>A model trained on 4 years of real JLT air data forecasts tomorrow's dust for you.</p></article>
+          <article class="step-card"><span class="step-number">03</span><h3>Plan around tomorrow's air</h3><p>A model trained on 4 years of real JLT air data forecasts tomorrow's air quality (PM2.5) for you.</p></article>
         </div>
       </div>
     </section>
@@ -352,10 +352,8 @@
         options: ["Sneezing", "Runny nose", "Itchy eyes", "Skin itching", "Coughing", "None of these"], exclusive: "None of these" },
       { key: "severity", type: "single", title: "How strong are they usually?", hint: "Your best guess is fine.",
         options: ["Mild", "Moderate", "Severe", "I don't have symptoms"] },
-      { key: "exposures", type: "multi", title: "What are you around often?", hint: "Select all that apply.",
-        options: ["Dust", "Pollen", "Cats", "Dogs", "Other animals", "Unsure"], exclusive: "Unsure" },
-      { key: "worse", type: "multi", title: "Do symptoms get worse after any of these?", hint: "Select all that apply.",
-        options: ["Dust", "Pollen", "Animals", "Outdoor environments", "I am not sure"], exclusive: "I am not sure" },
+      { key: "exposures", type: "multi", title: "What seems to set off or worsen your symptoms?", hint: "Select all that apply.",
+        options: ["Dust", "Pollen", "Cats", "Dogs", "Other animals", "Being outdoors", "Not sure"], exclusive: "Not sure" },
       { key: "places", type: "multi", title: "Where do you notice them most?", hint: "Select all that apply.",
         options: ["At home", "Outdoors", "At school or work", "Around animals"] },
     ];
@@ -464,12 +462,13 @@
         || `<p class="empty-state">No clear trigger stands out from your answers yet.</p>`;
       const a = r.air;
       const air = a ? `
-        <article class="result-card"><h3>Tomorrow's dust in JLT <span class="src">ML forecast</span></h3>
+        <article class="result-card"><h3>Tomorrow's air quality in JLT <span class="src">ML forecast</span></h3>
           <div class="big">${a.pm_tomorrow} <small>µg/m³ PM2.5</small></div>
           <span class="chip ${RISK[a.risk]}">${esc(a.risk)} risk for you</span>
           <p style="margin-top:10px">Your limit is <b>${a.pm_limit}</b>${a.reasons.length ? " because " + esc(a.reasons.join(", ")) : ""}.
           Lower-risk hours outside: <b>${esc(a.windows.join(", ") || "none tomorrow")}</b>.</p></article>` : "";
       const remedies = list(r.remedies);
+      const firstAid = list(r.first_aid);
       const src = r.source === "rules" ? "Rule-based backup (AI unavailable)" : `Analysed by ${esc(r.source)}`;
       return `
         <div class="results-top"><div><h2>Your allergy check</h2><p>${src}</p></div>
@@ -479,10 +478,10 @@
           <article class="result-card"><h3>Possible triggers</h3>${triggers}</article>
           ${air}
           <article class="result-card"><h3>What you can do</h3><ul class="suggestions">${list(r.tips)}</ul></article>
-          ${remedies ? `<article class="result-card"><h3>Home remedies to try</h3><ul class="suggestions">${remedies}</ul></article>` : ""}
-          <article class="result-card" style="grid-column: 1 / -1"><h3>🚑 If a reaction becomes serious</h3>
-            <p>Trouble breathing, swelling of the lips or throat, or fainting is an emergency. Call <b>998</b> and follow the first-aid steps.</p>
-            <a class="button button-secondary" href="#first-aid" style="margin-top:12px">View first aid</a></article>
+          ${remedies ? `<article class="result-card"><h3>Home remedies for your symptoms</h3><ul class="suggestions">${remedies}</ul></article>` : ""}
+          <article class="result-card" style="grid-column: 1 / -1"><h3>🚑 Your first-aid plan <span class="src">Based on your answers</span></h3>
+            ${firstAid ? `<ol class="suggestions">${firstAid}</ol>` : ""}
+            <a class="button button-secondary" href="#first-aid" style="margin-top:12px">Full first-aid guide</a></article>
         </div>
         <div class="disclaimer"><strong>Remember:</strong> these are possible triggers, not a diagnosis. Stop any remedy that causes irritation. If symptoms are frequent, getting worse or worrying you, talk to a doctor.</div>`;
     }

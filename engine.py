@@ -121,7 +121,7 @@ def forecast_tomorrow():
 def personal_limits(a):
     age = a.get("age", "")
     exposures, worse = set(a.get("exposures", [])), set(a.get("worse", []))
-    outdoors = "Outdoors" in a.get("places", []) or "Outdoor environments" in worse
+    outdoors = "Outdoors" in a.get("places", []) or "Being outdoors" in exposures or "Outdoor environments" in worse
     reasons = []
     if age in ("Under 13", "13–17"):
         reasons.append("children and teens are more sensitive to polluted air")
