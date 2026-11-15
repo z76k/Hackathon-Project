@@ -71,3 +71,8 @@ We started from the suggested **"Next-day air quality forecast"** and added:
     python app.py   # open http://localhost:5050
 
 **This project is a prototype and is not medical advice.**
+
+
+**Demo video (2 min):**
+
+[![▶ Watch the AllerGuard AI demo](https://drive.google.com/thumbnail?id=1hIIq8_NR7MfnD1UmaX3Nmg52sSaehRBf&sz=w1000)](https://drive.google.com/file/d/1hIIq8_NR7MfnD1UmaX3Nmg52sSaehRBf/view?usp=sharing)
