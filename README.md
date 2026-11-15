@@ -45,7 +45,8 @@ We started from the suggested **"Next-day air quality forecast"** and added:
 
 **Forecast model.** A scikit-learn **Random Forest** predicts tomorrow's average PM2.5 from today's PM2.5 and weather. We chose it because it handles non-linear weather effects and works well on small tabular data. The 2026 test days were never used in training.
 
-**AI analysis.** The 5 answers go to **Gemini 3.5 Flash-Lite**, with **Gemma 4** as a fallback. The prompt asks for JSON only, with no medicines or doses, dust mentioned only if the user chose it, and the last first-aid step always pointing to 998. Our code checks the reply and adds the emergency step if it's missing. If no model replies within 20 seconds, rules give the result instead, and the page labels which one was used.
+**AI analysis.** The 5 answers go to **Gemini 3.5 Flash-Lite**, with **Gemma 4** as a fallback. The prompt asks for JSON only, with no medicines or doses, dust mentioned only if the user chose it, and the last first-aid step always pointing to 998. Our code checks the reply and adds the emergency step if it's missing. If no model replies within 20 seconds, rules give the result instead, and the page labels which one was used. On the public site, requests go through a small Cloudflare Worker that keeps the API key secret, only accepts our site, and only allows our chosen models.
+
 
 ## Results (315 test days from 2026, never seen in training)
 | Method | Mean error (MAE) |
