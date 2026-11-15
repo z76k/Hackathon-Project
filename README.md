@@ -4,6 +4,9 @@
 **Track:** Health  
 **Team:** Zihaan Khan, **Mohammed Bin Muzaffar**
 **Live site:** https://z76k.github.io/Hackathon-Project/
+**Demo videos:**
+- 💻 [Desktop demo](https://drive.google.com/file/d/1hIIq8_NR7MfnD1UmaX3Nmg52sSaehRBf/view?usp=sharing)
+- 📱 [Mobile demo](https://drive.google.com/file/d/1__HgGBn44uy25vqAUpyOufD1fP_IIiRQ/view?usp=sharing)
 
 > **Main takeaway:** In one minute, a teenager with allergies gets AI-suggested triggers, a first-aid plan based on their answers, and the hours tomorrow when the air is safer *for them*.
 
@@ -82,6 +85,4 @@ We started from the suggested **"Next-day air quality forecast"** and added:
 **This project is a prototype and is not medical advice.**
 
 
-**Demo videos (2 min each):**
-- 💻 [Desktop demo](https://drive.google.com/file/d/1hIIq8_NR7MfnD1UmaX3Nmg52sSaehRBf/view?usp=sharing)
-- 📱 [Mobile demo](https://drive.google.com/file/d/1__HgGBn44uy25vqAUpyOufD1fP_IIiRQ/view?usp=sharing)
+
