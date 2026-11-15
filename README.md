@@ -74,7 +74,8 @@ We started from the suggested **"Next-day air quality forecast"** and added:
 - UAE emergency numbers: 998 (ambulance), 999 (police)
 - Libraries: scikit-learn, pandas, Flask, google-genai
 - AI model in the app: Google Gemini API (Gemini 3.5 Flash-Lite, Gemma 4)
-- AI tools used while building: ChatGPT, Claude (in the Dia browser), Gemini
+- Cloudflare Workers (AI proxy): https://workers.cloudflare.com
+- AI tools used while building: ChatGPT and Github Copilot for the website, Claude Opus 4.8 (in the Dia browser) for the backend, Gemini 4 Hydrogen  helped build the Cloudflare Worker
 
 ## Run it locally
     git clone https://github.com/z76k/Hackathon-Project && cd Hackathon-Project
