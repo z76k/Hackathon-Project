@@ -2,7 +2,7 @@
 **Personal allergy check and next-day air-quality planner for JLT, Dubai**
 
 **Track:** Health  
-**Team:** [Zihaan Khan], [Mohammed Bin Muzaffar]  
+**Team:** Zihaan Khan, **Mohammed Bin Muzaffar**
 **Live site:** https://z76k.github.io/Hackathon-Project/
 
 > **Main takeaway:** In one minute, a teenager with allergies gets AI-suggested triggers, a first-aid plan based on their answers, and the hours tomorrow when the air is safer *for them*.
