@@ -2,10 +2,19 @@
 **Personal allergy check and next-day air-quality planner for JLT, Dubai**
 
 **Track:** Health  
-**Team:** [Name 1], [Name 2]  
+**Team:** [Zihaan Khan], [Mohammed Bin Muzaffar]  
 **Live site:** https://z76k.github.io/Hackathon-Project/
 
 > **Main takeaway:** In one minute, a teenager with allergies gets AI-suggested triggers, a first-aid plan based on their answers, and the hours tomorrow when the air is safer *for them*.
+
+## Overview
+AllerGuard AI is a website designed to help people understand, identify and manage allergy-related symptoms. It gives users an accessible platform where they can enter their symptoms and receive information about possible allergic reactions, common triggers and primary first-aid guidance.
+
+The website helps users understand what might be causing their allergic reactions and explains the first steps they should take. It aims to make allergy information easier to access, reduce confusion, and encourage people to respond appropriately when symptoms appear.
+
+One of its key purposes is to guide users towards suitable first-response actions while helping them recognise when professional medical attention is necessary. For potentially life-threatening reactions, such as anaphylaxis, users are directed to call 998 immediately.
+
+**Our goal:** to use technology to make allergy awareness easier, provide accessible health information, and help people make safer, more informed decisions.
 
 ## The problem
 Many teenagers in Dubai have allergy symptoms like sneezing, coughing and itchy eyes, but don't know what sets them off, what to do first, or when a reaction becomes an emergency. Dust and fine particles (PM2.5) are common in JLT, and a level that's fine for one person can be too high for a teenager who coughs on dusty days. Our user is **a teen in JLT deciding the evening before when it's safe to go outside**.
@@ -73,6 +82,6 @@ We started from the suggested **"Next-day air quality forecast"** and added:
 **This project is a prototype and is not medical advice.**
 
 
-**Demo video (2 min):**
-
-[![▶ Watch the AllerGuard AI demo](https://drive.google.com/thumbnail?id=1hIIq8_NR7MfnD1UmaX3Nmg52sSaehRBf&sz=w1000)](https://drive.google.com/file/d/1hIIq8_NR7MfnD1UmaX3Nmg52sSaehRBf/view?usp=sharing)
+**Demo videos (2 min each):**
+- 💻 [Desktop demo](https://drive.google.com/file/d/1hIIq8_NR7MfnD1UmaX3Nmg52sSaehRBf/view?usp=sharing)
+- 📱 [Mobile demo](https://drive.google.com/file/d/1__HgGBn44uy25vqAUpyOufD1fP_IIiRQ/view?usp=sharing)
